@@ -1,0 +1,29 @@
+varnishtest "Test example vmod"
+
+shell {
+    echo "sub vcl_recv { set req.http.x-hostname = \"$HOSTNAME\"; } " > ${tmpdir}/hostname.vcl
+    echo "sub vcl_recv { set req.http.x-timestamp = \""$(date +%s)"\"; } " > ${tmpdir}/timestamp.vcl
+}
+
+server s1 {
+       rxreq
+       expect req.http.x-hostname == req.http.vmod-hostname
+} -start
+
+varnish v1 -vcl+backend {
+	import utils from "${vmod_topbuild}/src/.libs/libvmod_utils.so";
+
+	include "${tmpdir}/hostname.vcl";
+	include "${tmpdir}/timestamp.vcl";
+
+	sub vcl_recv {
+		set req.http.vmod-hostname = utils.hostname();
+		set req.http.vmod-timestamp = utils.timestamp();
+		set req.http.vmod-real = utils.real("123456789.123456789", 42.01);
+		set req.http.vmod-real-timestamp = utils.real(utils.timestamp(), 0.0);
+	}
+} -start
+
+client c1 {
+	txreq
+} -run

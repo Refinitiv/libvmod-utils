@@ -1,0 +1,27 @@
+varnishtest "Test vmod.exists"
+
+shell {
+      touch ${tmpdir}/ok
+      mkdir -p ${tmpdir}/folder/inside/another
+}
+
+server s1 {
+       rxreq
+       expect req.http.ok-exists == true
+       expect req.http.dir-exists == true
+       expect req.http.ko-exists == false
+} -start
+
+varnish v1 -vcl+backend {
+	import utils from "${vmod_topbuild}/src/.libs/libvmod_utils.so";
+
+	sub vcl_recv {
+		set req.http.ok-exists = utils.exists("${tmpdir}/ok");
+		set req.http.dir-exists = utils.exists("${tmpdir}/folder/inside");
+		set req.http.ko-exists = utils.exists("${tmpdir}/ko");
+	}
+} -start
+
+client c1 {
+	txreq
+} -run
