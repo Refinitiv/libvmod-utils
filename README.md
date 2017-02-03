@@ -66,6 +66,6 @@ sub vcl_error {
 
 Copyright
 =============
-This document is licensed under MIT license. See LICENSE for details.
+This document is licensed under BSD-2-Clause license. See LICENSE for details.
 
 That code has been opened by (c) Thomson Reuters.
