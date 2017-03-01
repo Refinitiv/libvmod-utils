@@ -63,6 +63,18 @@ sub vcl_error {
 
 ```
 
+Compatibility
+=============
+This module is compatible and useful for Varnish 3.x only.
+Most of these functions have been integrated to Varnish 4. See the migration table below:
+ 
+| Varnish 3.x libvmod-utils         | Varnish 4.x|
+| --------------------------------- |------------|
+| `utils.hostname()`                | `server.hostname` |
+| `utils.timestamp("foobar")`       | `std.timestamp("foobar")` |
+| `utils.real("42.1234", 0)`        | `std.real("42.1234", 0)` |
+| `utils.exists("/etc/return_503")` | _no replacement yet_ |
+
 
 Copyright
 =============
