@@ -7,6 +7,7 @@ VMOD Varnish module utility
 Function STRING hostname(PRIV_VCL)   # Return hostname
 Function STRING timestamp()          # Return timestamp (%.9f)
 Function REAL real(STRING, REAL)     # Convert a string into a REAL (double)
+Function IP ip(STRING, IP)           # Convert a string into an IP
 Function BOOL exists(STRING)         # Test presence of a file
 ```
 
@@ -73,7 +74,8 @@ Most of these functions have been integrated to Varnish 4. See the migration tab
 | `utils.hostname()`                | `server.hostname` |
 | `utils.timestamp("foobar")`       | `std.timestamp("foobar")` |
 | `utils.real("42.1234", 0)`        | `std.real("42.1234", 0)` |
-| `utils.exists("/etc/return_503")` | _no replacement yet_ |
+| `utils.ip(req.http.REMOTEADDRESS, client.ip)` | `std.ip(req.http.REMOTEADDRESS, client.ip)` |
+| `utils.exists("/etc/return_503")` | `std.file_exists("/etc/return_502")` |
 
 
 Copyright
