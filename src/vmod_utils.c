@@ -87,7 +87,10 @@ vmod_timestamp(struct sess * sp)
 
 	(void)sp;
 	#define TIMESTAMP_LENGTH 64
-	AN(p = WS_Alloc(sp->http->ws, TIMESTAMP_LENGTH));
+	p = WS_Alloc(sp->http->ws, TIMESTAMP_LENGTH);
+	if (p == NULL) {
+		return "WS_Alloc_error";
+	}
 	snprintf(p, TIMESTAMP_LENGTH, "%.9f", TIM_real());
 	return p;
 }
