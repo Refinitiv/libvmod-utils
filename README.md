@@ -75,7 +75,7 @@ Most of these functions have been integrated to Varnish 4. See the migration tab
 | `utils.timestamp("foobar")`       | `std.timestamp("foobar")` |
 | `utils.real("42.1234", 0)`        | `std.real("42.1234", 0)` |
 | `utils.ip(req.http.REMOTEADDRESS, client.ip)` | `std.ip(req.http.REMOTEADDRESS, client.ip)` |
-| `utils.exists("/etc/return_503")` | `std.file_exists("/etc/return_502")` |
+| `utils.exists("/etc/return_503")` | `std.file_exists("/etc/return_503")` |
 
 
 Copyright
