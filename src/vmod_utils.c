@@ -8,6 +8,10 @@
 #include <syslog.h>
 #include <ctype.h>
 
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netdb.h>
+
 #include "vas.h"
 #include "vrt.h"
 #include "vcc_if.h"
@@ -102,4 +106,45 @@ vmod_exists(struct sess *sp, const char *path)
 
 	(void)sp;
 	return (stat(path, &st) == 0);
+}
+
+struct sockaddr_storage*
+vmod_ip(struct sess *sp, const char *s, struct sockaddr_storage *d)
+{
+	struct addrinfo hints, *res0 = NULL;
+	const struct addrinfo *res;
+	int error;
+	void *p;
+	struct sockaddr_storage *r = NULL;
+	static int l = sizeof(struct sockaddr_storage);
+
+	(void)sp;
+	AN(d);
+
+	p = WS_Alloc(sp->http->ws, l);
+	if (p == NULL) {
+		syslog(LOG_ERR, "vmod std.ip(): insufficient workspace");
+		return d;
+	}
+
+	if (s != NULL) {
+		memset(&hints, 0, sizeof(hints));
+		hints.ai_family = PF_UNSPEC;
+		hints.ai_socktype = SOCK_STREAM;
+		error = getaddrinfo(s, "80", &hints, &res0);
+		if (!error) {
+			for (res = res0; res != NULL; res = res->ai_next) {
+				r = p;
+				memcpy(r, res->ai_addr, res->ai_addrlen);
+				break;
+			}
+		}
+	}
+	if (r == NULL) {
+		r = p;
+		memcpy(r, d, l);
+	}
+	if (res0 != NULL)
+		freeaddrinfo(res0);
+	return (r);
 }
