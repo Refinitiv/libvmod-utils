@@ -82,4 +82,4 @@ Copyright
 =============
 This document is licensed under BSD-2-Clause license. See LICENSE for details.
 
-That code has been opened by (c) Thomson Reuters.
+The code was opened by (c) Refinitiv (previously Thomson Reuters).
